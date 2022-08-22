@@ -1,11 +1,11 @@
 import './App.css'
-import Canvas from './components/Canvas'
+import Whiteboard from './components/Whiteboard'
 
 function App() {
 
   return (
     <div className="App">
-      <Canvas></Canvas>
+      <Whiteboard></Whiteboard>
     </div>
   )
 }
