@@ -56,6 +56,21 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input[type="color"] {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  height: 100%;
+  aspect-ratio: 1;
+  background-color: transparent;
+  border: none;
+}
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 100%;
+  border: none;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
