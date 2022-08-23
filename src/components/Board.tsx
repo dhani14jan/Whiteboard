@@ -1,16 +1,25 @@
 import React, { LegacyRef, MouseEvent, useEffect, useRef, useState } from 'react'
 
-const Board = (props: any) => {
+const Board = (props: { width: number, height: number }) => {
     const divRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     const [lineWidth, setLineWidth] = useState(1)
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
-    const [isPainting, setIsPainting] = useState(true)
-    const [offset, setOffset] = useState({ x: 0, y: 0 })
+    const [isPainting, setIsPainting] = useState(false)
 
     const handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
         setIsPainting(true)
+
+        if (context) {
+            const offsetLeft = canvasRef?.current?.offsetLeft || 0
+            const offsetTop = canvasRef?.current?.offsetTop || 0
+
+            context.lineWidth = lineWidth
+            context.lineCap = "round"
+            context.lineTo(e.clientX - offsetLeft + window.scrollX, e.clientY - offsetTop + window.scrollY)
+            context.stroke()
+        }
     }
     const handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
         setIsPainting(false)
@@ -23,22 +32,26 @@ const Board = (props: any) => {
             console.log(`dw: ${divRef.current?.offsetWidth}  dh: ${divRef.current?.offsetHeight}`)
             console.log(`scroll: ${window.scrollY}`)
             console.log(`cw: ${canvasRef.current?.width}  ch: ${canvasRef.current?.height}`)
+
+            const offsetLeft = canvasRef?.current?.offsetLeft || 0
+            const offsetTop = canvasRef?.current?.offsetTop || 0
+            
             context.lineWidth = lineWidth
             context.lineCap = "round"
-            context.lineTo(e.clientX - offset.x + window.scrollX, e.clientY - offset.y + window.scrollY)
+            context.lineTo(e.clientX - offsetLeft + window.scrollX, e.clientY - offsetTop + window.scrollY)
             context.stroke()
         }
     }
 
     useEffect(() => {
         if (canvasRef.current) {
-            const offsetLeft = canvasRef.current.offsetLeft
-            const offsetTop = canvasRef.current.offsetTop
-            const divHeight = divRef.current?.offsetHeight
-            const divWidth = divRef.current?.offsetWidth
-            setOffset({ x: offsetLeft, y: offsetTop })
-            canvasRef.current.width = divWidth || 1280
-            canvasRef.current.height = divHeight || 720
+
+            canvasRef.current.width = props.width? props.width : 1280
+            canvasRef.current.height = props.height? props.height : 720
+            console.log(canvasRef.current.width)
+            console.log(canvasRef.current.height)
+            console.log(props.width)
+            console.log(props.height)
             const tempContext = canvasRef.current.getContext("2d")
             if (tempContext) {
                 setContext(tempContext)
@@ -47,13 +60,14 @@ const Board = (props: any) => {
     }, [canvasRef, divRef])
 
     return (
-        <div ref={divRef} style={{width: "100%", height: "100%"}}>
+        <div ref={divRef} style={{ width: "auto", height: "auto", textAlign: "center" }}>
             <canvas
                 ref={canvasRef}
-                style={{ border: "1px solid black", borderRadius: "2rem", width: "100%", height: "100%" }}
+                style={{ border: "1px solid black", borderRadius: "2rem", width: props.width? props.width : 1280, height: props.height? props.height : 720 }}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
+
 
             ></canvas>
 

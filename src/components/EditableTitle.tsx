@@ -10,6 +10,18 @@ const EditableTitle = (props: any) => {
     const [title, setTitle] = useState((props.default ? props.default : "Your Whiteboard!"))
     const [oldTitle, setOldTitle] = useState((props.default ? props.default : "Your Whiteboard!"))
     const titleRef = useRef(null)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const cancelAction = () => {
+        setTitle(oldTitle)
+        setEditTitle(false)
+    }
+    const applyAction = () => {
+        setOldTitle(title)
+        setEditTitle(false)
+        document.title = title
+    }
+
     const handleTitleToggle = () => {
         setShowTitle(prev => !prev)
     }
@@ -17,21 +29,17 @@ const EditableTitle = (props: any) => {
         setEditTitle(true)
     }
     const handleCheckIcon = () => {
-        setOldTitle(title)
-        setEditTitle(false)
+        applyAction()
     }
     const handleCloseIcon = () => {
-        setTitle(oldTitle)
-        setEditTitle(false)
+        cancelAction()
     }
     const handleInputKey = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            setOldTitle(title)
-            setEditTitle(false)
+            applyAction()
         }
         else if (e.key === "Escape") {
-            setTitle(oldTitle)
-            setEditTitle(false)
+            cancelAction()
         }
     }
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +51,7 @@ const EditableTitle = (props: any) => {
 
     if (showTitle) {
         return (
-            <div ref={titleRef} style={{ minHeight: "10vh", display: "flex", textAlign: "center", alignItems: "center", justifyContent: "center" }}>
+            <div ref={titleRef} style={{ minHeight: "5vh", padding: "1rem", textAlign: "center", verticalAlign: "middle" }}>
                 <ExpandLess color="error" style={{ position: "fixed", top: 0, left: 0 }} onClick={handleShowTitleToggle} />
                 {!editTitle ?
                     <>
@@ -53,7 +61,7 @@ const EditableTitle = (props: any) => {
                     :
                     <>
                         <CloseIcon color="error" onClick={handleCloseIcon}></CloseIcon>
-                        <input value={title} onChange={handleTitleChange} onKeyDown={handleInputKey} />
+                        <input autoFocus={true} value={title} ref={inputRef} onChange={handleTitleChange} onKeyDown={handleInputKey} />
                         <CheckIcon color="primary" onClick={handleCheckIcon}></CheckIcon>
                     </>
                 }
