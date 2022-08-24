@@ -12,7 +12,6 @@ const Board = (props: { width: number, height: number }) => {
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
     const [isPainting, setIsPainting] = useState(false)
 
-
     const draw = (e: MouseEvent<HTMLCanvasElement>) => {
         if (context) {
             const offsetLeft = canvasRef?.current?.offsetLeft || 0
@@ -46,8 +45,13 @@ const Board = (props: { width: number, height: number }) => {
 
     const handleColorInput = (e: ChangeEvent<HTMLInputElement>) => {
         if (context) {
+            setStrokStyle(e.target.value)
             context.strokeStyle = e.target.value
         }
+    }
+
+    const handleSizeSlider = (e: ChangeEvent<HTMLInputElement>) => {
+        setLineWidth(Number(e.target.value))
     }
 
     useEffect(() => {
@@ -70,7 +74,7 @@ const Board = (props: { width: number, height: number }) => {
         <div ref={divRef} style={{ width: "auto", height: "auto", textAlign: "center" }}>
             <canvas
                 ref={canvasRef}
-                style={{ border: "1px solid black", borderRadius: "2rem", width: props.width? props.width : 1280, height: props.height? props.height : 720 }}
+                style={{backgroundColor: "white", border: "1px solid black", borderRadius: "2rem", width: props.width? props.width : 1280, height: props.height? props.height : 720 }}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
@@ -78,9 +82,25 @@ const Board = (props: { width: number, height: number }) => {
 
             ></canvas>
             <Toolbox className="toolbox">
-                <div>
-                    <Brightness1 style={{ fontSize: lineWidth * 3 }} />
-                    {" "}{lineWidth * 2}
+                <div style={{position: "relative"}}>
+                    <input type="range" min={1} max={10} value={lineWidth} step={1} onChange={handleSizeSlider} list="steplist"/>
+                    <datalist id="steplist">
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </datalist>
+                    <div>
+                        <Brightness1 style={{ fontSize: lineWidth * 2, minWidth: "5px", color: strokeStyle }} />
+                    </div>
+                    <label style={{position: "absolute", left: 0, right: 0}}>{lineWidth}</label>
                 </div>
                 <div>
                     <input type="color" onChange={handleColorInput} />

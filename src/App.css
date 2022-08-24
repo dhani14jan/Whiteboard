@@ -22,5 +22,30 @@ input {
 }
 
 .toolbox>div {
+  min-width: 60px;
   width: max-content;
+
+}
+
+input[type="range"] {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  bottom: 200%;
+  transform: translateX(-50%) translateY(-100%) rotate(270deg);
+}
+
+input[type="color"] {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  height: 100%;
+  aspect-ratio: 1;
+  background-color: transparent;
+  border: none;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
 }
