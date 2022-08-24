@@ -9,7 +9,7 @@ const Toolbox = ({ children, className }: any) => {
           width: "400px",
           left: "50%",
           transform: "translateX(-50%) translateY(-100%)",
-          background: "#DDD",
+          background: "grey",
           borderRadius: "0.8rem",
           padding: "2rem"
       }}>

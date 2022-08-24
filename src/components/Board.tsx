@@ -1,7 +1,9 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
-import { Add, Brightness1 } from "@mui/icons-material"
-import RemoveIcon from "@mui/icons-material/Remove"
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react'
+import Brightness1 from '@mui/icons-material/Brightness1';
+import ClearIcon from '@mui/icons-material/Clear';
 import Toolbox from './Toolbox'
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Board = (props: { width: number, height: number }) => {
     const divRef = useRef<HTMLDivElement>(null)
@@ -12,9 +14,10 @@ const Board = (props: { width: number, height: number }) => {
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
     const [isPainting, setIsPainting] = useState(false)
     const [showSizeSlider, setShowSizeSlider] = useState(false);
-
+    const [isErasing, setIsErasing] = useState(false);
     const draw = (e: MouseEvent<HTMLCanvasElement>) => {
         if (context) {
+            if (isErasing) context.strokeStyle = "white";
             const offsetLeft = canvasRef?.current?.offsetLeft || 0
             const offsetTop = canvasRef?.current?.offsetTop || 0
 
@@ -55,6 +58,14 @@ const Board = (props: { width: number, height: number }) => {
         setLineWidth(Number(e.target.value))
     }
 
+    const handleEraserToggle = () => {
+        setIsErasing(prev => !prev)
+    }
+
+    const handlePen = () => {
+        setIsErasing(false);
+    }
+
     useEffect(() => {
         if (canvasRef.current) {
 
@@ -73,6 +84,17 @@ const Board = (props: { width: number, height: number }) => {
 
     const handleShowSizeSlider = () => {
         setShowSizeSlider(prev => !prev)
+    }
+
+    const handleClear = () => {
+        if (canvasRef.current && context) {
+            const height = canvasRef.current.height
+            const width = canvasRef.current.width
+            // context.rect(0, 0, width, height);
+            // context.fillStyle = "white"
+            // context.fill()
+            context.clearRect(0, 0, width, height)
+        }
     }
 
     return (
@@ -100,13 +122,13 @@ const Board = (props: { width: number, height: number }) => {
                     <input type="color" onChange={handleColorInput} />
                 </div>
                 <div>
-                    Pen
+                    <EditIcon style={{ color: strokeStyle }} onClick={handlePen} />
                 </div>
                 <div>
-                    Eraser
+                    <AutoFixNormalIcon color="primary" onClick={handleEraserToggle} />
                 </div>
                 <div>
-                    Clear
+                    <ClearIcon color="error" onClick={handleClear} />
                 </div>
             </Toolbox>
         </div>
