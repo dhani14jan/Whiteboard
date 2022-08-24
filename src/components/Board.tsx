@@ -71,12 +71,8 @@ const Board = (props: { width: number, height: number }) => {
         }
     }, [canvasRef, divRef])
 
-    const handleMouseEnter = () => {
-        setShowSizeSlider(true)
-    }
-
-    const handleLeave = () => {
-        setShowSizeSlider(false)
+    const handleShowSizeSlider = () => {
+        setShowSizeSlider(prev => !prev)
     }
 
     return (
@@ -88,25 +84,15 @@ const Board = (props: { width: number, height: number }) => {
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
             ></canvas>
-            <Toolbox className="toolbox">
-                <div style={{ position: "relative" }} onMouseEnter={handleMouseEnter} onMouseLeave={handleLeave}>
-                    {showSizeSlider && <><input type="range" min={1} max={10} value={lineWidth} step={1} onChange={handleSizeSlider} list="steplist"/>
+            <Toolbox className="toolbox" style={{ position: "relative" }}>
+                {showSizeSlider && <><input type="range" min={1} max={30} value={lineWidth} step={1} onChange={handleSizeSlider} list="steplist" />
                     <datalist id="steplist">
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                        </datalist>
-                    </>}
-                    <div>
-                        <Brightness1 style={{ fontSize: lineWidth * 2, minWidth: "5px", color: strokeStyle }} />
+                        {Array.from(Array(30)).map((it, index) => <option key={index}>{index}</option>)}
+                    </datalist>
+                </>}
+                <div onClick={handleShowSizeSlider} style={{ position: "relative" }}>
+                    <div >
+                        <Brightness1 style={{ fontSize: lineWidth > 20? 20: lineWidth, minWidth: "5px", color: strokeStyle }} />
                     </div>
                     <label style={{position: "absolute", left: 0, right: 0}}>{lineWidth}</label>
                 </div>
