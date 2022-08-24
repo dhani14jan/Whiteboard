@@ -11,6 +11,7 @@ const Board = (props: { width: number, height: number }) => {
     const [strokeStyle, setStrokStyle] = useState("black")
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null)
     const [isPainting, setIsPainting] = useState(false)
+    const [showSizeSlider, setShowSizeSlider] = useState(false);
 
     const draw = (e: MouseEvent<HTMLCanvasElement>) => {
         if (context) {
@@ -70,6 +71,14 @@ const Board = (props: { width: number, height: number }) => {
         }
     }, [canvasRef, divRef])
 
+    const handleMouseEnter = () => {
+        setShowSizeSlider(true)
+    }
+
+    const handleLeave = () => {
+        setShowSizeSlider(false)
+    }
+
     return (
         <div ref={divRef} style={{ width: "auto", height: "auto", textAlign: "center" }}>
             <canvas
@@ -78,12 +87,10 @@ const Board = (props: { width: number, height: number }) => {
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
-
-
             ></canvas>
             <Toolbox className="toolbox">
-                <div style={{position: "relative"}}>
-                    <input type="range" min={1} max={10} value={lineWidth} step={1} onChange={handleSizeSlider} list="steplist"/>
+                <div style={{ position: "relative" }} onMouseEnter={handleMouseEnter} onMouseLeave={handleLeave}>
+                    {showSizeSlider && <><input type="range" min={1} max={10} value={lineWidth} step={1} onChange={handleSizeSlider} list="steplist"/>
                     <datalist id="steplist">
                         <option>0</option>
                         <option>1</option>
@@ -96,7 +103,8 @@ const Board = (props: { width: number, height: number }) => {
                         <option>8</option>
                         <option>9</option>
                         <option>10</option>
-                    </datalist>
+                        </datalist>
+                    </>}
                     <div>
                         <Brightness1 style={{ fontSize: lineWidth * 2, minWidth: "5px", color: strokeStyle }} />
                     </div>
