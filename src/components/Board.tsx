@@ -23,7 +23,7 @@ const Board = (props: { width: number, height: number }) => {
 
             context.lineWidth = lineWidth
             context.lineCap = "round"
-            context.lineTo(e.clientX - offsetLeft + window.scrollX, e.clientY - offsetTop + window.scrollY)
+            context.lineTo(e.clientX - offsetLeft + window.scrollX, e.clientY - offsetTop + window.scrollY + 24)
             context.stroke()
         }
     }
@@ -90,12 +90,21 @@ const Board = (props: { width: number, height: number }) => {
         if (canvasRef.current && context) {
             const height = canvasRef.current.height
             const width = canvasRef.current.width
-            // context.rect(0, 0, width, height);
-            // context.fillStyle = "white"
-            // context.fill()
             context.clearRect(0, 0, width, height)
         }
     }
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            if (isErasing) {
+                canvasRef.current.style.cursor = "url(/eraser-solid.svg), auto"
+            }
+            else {
+                canvasRef.current.style.cursor = "url(/pen-nib-solid.svg), auto"
+            }
+        }
+
+    },[isErasing])
 
     return (
         <div ref={divRef} style={{ width: "auto", height: "auto", textAlign: "center" }}>
@@ -118,8 +127,9 @@ const Board = (props: { width: number, height: number }) => {
                     </div>
                     <label style={{position: "absolute", left: 0, right: 0}}>{lineWidth}</label>
                 </div>
-                <div>
-                    <input type="color" onChange={handleColorInput} />
+                <div style={{position: "relative"}}>
+                    <input type="color" onChange={handleColorInput} name="color"/>
+                    <label htmlFor="color">Color</label>
                 </div>
                 <div>
                     <EditIcon style={{ color: strokeStyle }} onClick={handlePen} />
